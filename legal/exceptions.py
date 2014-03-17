@@ -1,0 +1,2 @@
+class NoVersionException(Exception):
+    pass

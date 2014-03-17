@@ -1,0 +1,13 @@
+This template should be overriden and replaced with your own terms of service.
+
+<form name="tos_accept" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}"/>
+
+  <div class="form-actions">
+    <div class="pull-right">
+      <a class="btn btn-large" href="{{ logoutURL }}">Sign Out</a>
+      <button type="submit" class="btn btn-large btn-success">Accept</button>
+    </div>
+  </div>
+</form>
