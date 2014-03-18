@@ -5,13 +5,17 @@ This Django app adds support for versioned terms of service.
 
 Installation
 ------------
-1. Add ``legal`` to your ``INSTALLED_APPS`` setting.
-2. *(Optional)* Add a new setting: ``LEGAL_TOS_NAME = 'terms_of_service'``
-3. Update ``urls.py`` with the following::
+1. Install with pip::
+
+    $ pip install django-legal
+
+2. Add ``legal`` to your ``INSTALLED_APPS`` setting.
+3. *(Optional)* Add a new setting: ``LEGAL_TOS_NAME = 'terms_of_service'``
+4. Update ``urls.py`` with the following::
 
     url(r'^legal/', include('legal.urls')),
 
-4. Create a new Agreement and AgreementVersion (ideally via data migration)::
+5. Create a new Agreement and AgreementVersion (ideally via data migration)::
 
     # -*- coding: utf-8 -*-
     import os
