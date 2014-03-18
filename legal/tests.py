@@ -235,3 +235,18 @@ class TermsOfServiceAcceptanceMiddlewareTests(TestCase):
             request = RequestFactory().get(path)
             request.user = self.user
             self.assertIsNone(self.middleware.process_request(request), 'The path %s should be ignored!' % path)
+
+
+class TermsOfServiceViewTests(TestCase):
+    def test_page_loads(self):
+        agreement = Agreement.objects.create(name=TOS_NAME)
+        get_agreement_version(agreement)
+
+        response = self.client.get(reverse('tos'))
+        self.assertEqual(200, response.status_code)
+
+
+class PrivacyPolicyViewTests(TestCase):
+    def test_page_loads(self):
+        response = self.client.get(reverse('privacy_policy'))
+        self.assertEqual(200, response.status_code)
