@@ -15,7 +15,7 @@ setup(
     license='MIT License',
     description='A Django app to require user acceptance of terms of service.',
     long_description=README,
-    url='http://www.kyruus.com/',
+    url='https://github.com/Kyruus/django-legal',
     author='Clinton Blackburn',
     author_email='cblackburn@kyruus.com',
     classifiers=[
