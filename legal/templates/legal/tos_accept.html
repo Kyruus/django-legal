@@ -1,4 +1,4 @@
-This template should be overriden and replaced with your own terms of service.
+{{ tos.content|safe }}
 
 <form name="tos_accept" method="post">
   {% csrf_token %}
@@ -6,7 +6,7 @@ This template should be overriden and replaced with your own terms of service.
 
   <div class="form-actions">
     <div class="pull-right">
-      <a class="btn btn-large" href="{{ logoutURL }}">Sign Out</a>
+      <a class="btn btn-large" href="{{ logout_url }}">Sign Out</a>
       <button type="submit" class="btn btn-large btn-success">Accept</button>
     </div>
   </div>

@@ -16,6 +16,11 @@ class PrivacyPolicyView(TemplateView):
 class TermsOfServiceView(TemplateView):
     template_name = 'legal/tos.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(TermsOfServiceView, self).get_context_data(**kwargs)
+        context['tos'] = Agreement.objects.get(name=TOS_NAME)
+        return context
+
 
 class TermsOfServiceAcceptView(View):
     @method_decorator(login_required)
@@ -24,7 +29,8 @@ class TermsOfServiceAcceptView(View):
 
     def get(self, request, *args, **kwargs):
         tos = Agreement.objects.get(name=TOS_NAME).current_version
-        return render(request, 'legal/tos_accept.html', {'next': request.GET.get('next'), 'tos': tos})
+        return render(request, 'legal/tos_accept.html',
+                      {'next': request.GET.get('next'), 'tos': tos, 'logout_url': settings.LOGOUT_URL})
 
     def post(self, request, *args, **kwargs):
         # Get the proper redirect location
