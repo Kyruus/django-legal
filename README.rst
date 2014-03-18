@@ -60,8 +60,17 @@ Installation
 
 
 
-Testing
--------
+Testing This App
+----------------
 A modified ``manage.py`` and Django settings file are included to test this app::
 
     $ python manage.py test
+
+
+Testing Your App
+----------------
+You may find the middleware a bit excessive for your tests as it requires you to create an agreement and version, and accept the agreement on behalf of your tests users. If you want to disable the middleware, add the following to your settings::
+
+    if 'test' in sys.argv:
+      MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
+      MIDDLEWARE_CLASSES.remove('legal.middleware.TermsOfServiceAcceptanceMiddleware')
