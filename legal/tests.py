@@ -5,8 +5,9 @@ import urllib
 import urlparse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
+from django.shortcuts import resolve_url
 from django.test import TestCase, RequestFactory
 from legal import TOS_NAME
 from legal.middleware import TermsOfServiceAcceptanceMiddleware
@@ -108,7 +109,8 @@ class ModelsTest(TestCase):
         except NoVersionException:
             pass
         except:
-            raise self.fail('Agreement.current_version should raise a NoVersionException when called for an Agreement with no versions.')
+            raise self.fail(
+                'Agreement.current_version should raise a NoVersionException when called for an Agreement with no versions.')
 
         version1 = get_agreement_version(self.agreement)
         self.assertEqual(self.agreement.current_version, version1, 'Incorrect first version.')
@@ -221,3 +223,15 @@ class TermsOfServiceAcceptanceMiddlewareTests(TestCase):
         next_param = urllib.urlencode({'next': '/?%s' % urllib.urlencode({'param': 'xxx'})})
         expected_url = reverse('tos_accept') + '?%s' % next_param
         self.assertEqual(expected_url, response.url)
+
+    def test_ignored_urls(self):
+        if not self.client.login(username=self.user.username, password=PASSWORD):
+            self.fail('User login failed!')
+
+        ignored_paths = [reverse_lazy('tos_accept'), resolve_url(settings.LOGIN_URL), resolve_url(settings.LOGOUT_URL),
+                        reverse_lazy('tos'), reverse_lazy('privacy_policy')]
+
+        for path in ignored_paths:
+            request = RequestFactory().get(path)
+            request.user = self.user
+            self.assertIsNone(self.middleware.process_request(request), 'The path %s should be ignored!' % path)
