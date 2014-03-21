@@ -1,4 +1,4 @@
-import urlparse
+import urllib.parse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -35,7 +35,7 @@ class TermsOfServiceAcceptView(View):
     def post(self, request, *args, **kwargs):
         # Get the proper redirect location
         redirect_to = request.REQUEST.get('next', '/')
-        netloc = urlparse.urlparse(redirect_to)[1]
+        netloc = urllib.parse.urlparse(redirect_to)[1]
 
         if netloc and netloc != request.get_host():
             redirect_to = '/'

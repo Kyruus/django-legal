@@ -1,11 +1,11 @@
 import datetime
 import random
 import string
-import urllib
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.parse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse, reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import resolve_url
 from django.test import TestCase, RequestFactory
@@ -95,7 +95,7 @@ class ModelsTest(TestCase):
         self.assertRaises(ValidationError, version2.full_clean)
 
     def test_agreement_versions(self):
-        self.failIf(self.agreement.versions, 'Agreement.versions should return [] for an agreement with no versions.')
+        self.assertFalse(self.agreement.versions, 'Agreement.versions should return [] for an agreement with no versions.')
 
         version1 = get_agreement_version(self.agreement)
         self.assertEqual(self.agreement.versions[0], version1, 'Agreement.versions should contain version1')
@@ -144,7 +144,7 @@ class TermsOfServiceAcceptViewTests(TestCase):
     def assertRedirectsToLogin(self, response):
         # Note: Not using assertRedirects because I don't want to deal with creating a login template
         self.assertEqual(302, response.status_code)
-        url = urlparse.urlparse(response.url)
+        url = urllib.parse.urlparse(response.url)
         self.assertEqual(settings.LOGIN_URL, url[2])
 
     def test_logged_out(self):
@@ -173,13 +173,13 @@ class TermsOfServiceAcceptViewTests(TestCase):
         next = '/'
         response = self.client.post(reverse('tos_accept'))
         self.assertEqual(302, response.status_code)
-        url = urlparse.urlparse(response.url)
+        url = urllib.parse.urlparse(response.url)
         self.assertEqual(next, url[2])
 
         next = '/abc123'
         response = self.client.post(reverse('tos_accept'), {'next': next})
         self.assertEqual(302, response.status_code)
-        url = urlparse.urlparse(response.url)
+        url = urllib.parse.urlparse(response.url)
         self.assertEqual(next, url[2])
 
     def test_get_valid_agreement(self):
@@ -220,7 +220,7 @@ class TermsOfServiceAcceptanceMiddlewareTests(TestCase):
 
         self.assertIs(type(response), HttpResponseRedirect)
 
-        next_param = urllib.urlencode({'next': '/?%s' % urllib.urlencode({'param': 'xxx'})})
+        next_param = urllib.parse.urlencode({'next': '/?%s' % urllib.parse.urlencode({'param': 'xxx'})})
         expected_url = reverse('tos_accept') + '?%s' % next_param
         self.assertEqual(expected_url, response.url)
 
@@ -228,8 +228,8 @@ class TermsOfServiceAcceptanceMiddlewareTests(TestCase):
         if not self.client.login(username=self.user.username, password=PASSWORD):
             self.fail('User login failed!')
 
-        ignored_paths = [reverse_lazy('tos_accept'), resolve_url(settings.LOGIN_URL), resolve_url(settings.LOGOUT_URL),
-                        reverse_lazy('tos'), reverse_lazy('privacy_policy')]
+        ignored_paths = [reverse('tos_accept'), resolve_url(settings.LOGIN_URL), resolve_url(settings.LOGOUT_URL),
+                        reverse('tos'), reverse('privacy_policy')]
 
         for path in ignored_paths:
             request = RequestFactory().get(path)

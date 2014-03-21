@@ -1,4 +1,4 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect, resolve_url
@@ -18,6 +18,6 @@ class TermsOfServiceAcceptanceMiddleware(object):
             if not tos.user_accepted(user) and request.path not in ignored_paths:
                 next = request.path
                 if request.GET:
-                    next += '?%s' % urllib.urlencode(request.GET)
+                    next += '?%s' % urllib.parse.urlencode(request.GET)
                 params = {'next': next}
-                return redirect(tos_accept_path + '?%s' % urllib.urlencode(params))
+                return redirect(tos_accept_path + '?%s' % urllib.parse.urlencode(params))
